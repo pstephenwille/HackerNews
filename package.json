@@ -22,6 +22,7 @@
     "memcache": "^0.3.0",
     "memcached": "^2.1.0",
     "request": "^2.53.0",
+    "shrinkwrap": "^0.4.0",
     "socket.io": "^1.3.5"
   },
   "devDependencies": {

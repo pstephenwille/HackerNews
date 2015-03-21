@@ -1,7 +1,3 @@
-/**
- * Created by stephen on 3/6/15.
- */
-
 APP = React.createClass({
     /* init to get top-stories */
 

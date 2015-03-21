@@ -9,8 +9,8 @@ var path = {
     ALL: ['jsx/*.jsx', 'app.jsx', 'index.html'],
     JS: ['jsx/*.jsx', 'app.jsx'],
     MINIFIED_OUT: 'build.min.js',
-    DEST_SRC: 'dist/src',
-    DEST_BUILD: 'dist/build',
+    DEST_SRC: 'server/public/dist/src',
+    DEST_BUILD: 'server/public/dist/build',
     DEST: 'dist'
 };
 
@@ -35,8 +35,7 @@ gulp.task('build', function(){
         .pipe(react())
         .pipe(concat(path.MINIFIED_OUT))
         .pipe(uglify(path.MINIFIED_OUT))
-        .pipe(gulp.dest(path.DEST_BUILD))
-        .pipe(gulp.dest('./server/public'));
+        .pipe(gulp.dest(path.DEST_BUILD));
 });
 
 gulp.task('replaceHTML', function(){
