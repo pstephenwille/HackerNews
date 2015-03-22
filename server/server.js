@@ -91,6 +91,7 @@ app.get('/api/sorted-stories/:sortOrder/:range', function (req, res) {
         fwdEnd = step;
     }
 
+
     /* check bounds: back */
     backStart = (backStart < 0) ? 0 : backStart;
 
@@ -128,7 +129,7 @@ console.log('\n', 'node server running on port 5005, socket.io on 5006, and memc
  * */
 socket = socket.listen(5006);
 
-/* wait till we have all stories, then sort them */
+/*  wait till we have all stories, send story count, then sort them */
 socket.on('connect', function (conn) {
 
     async.whilst(
@@ -137,7 +138,9 @@ socket.on('connect', function (conn) {
             return _stories.length != _limit;
         },
 
-        function getStories(callback) {
+
+
+        function countStories(callback) {
 
             console.log('count ', _stories.length);
 
@@ -145,6 +148,8 @@ socket.on('connect', function (conn) {
 
             setTimeout(callback, 10);
         },
+
+
 
         function finalData(err) {
             console.log('done');
