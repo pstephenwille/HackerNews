@@ -17,6 +17,9 @@ var express = require('express'),
     top500Stories_Url = 'https://hacker-news.firebaseio.com/v0/topstories.json',
     socket = require('socket.io');
 
+
+
+
 /*
  * SETUP
  * */
@@ -53,6 +56,9 @@ http(top500Stories_Url, function (err, res, body) {
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use('/api', router);
+
+
+
 
 /*
  * ROUTES
@@ -123,6 +129,9 @@ app.get('/api/sorted-stories/:sortOrder/:range', function (req, res) {
 
 app.listen(port);
 console.log('\n', 'node server running on port 5005, socket.io on 5006, and memcache on port 11211', '\n\n\n');
+
+
+
 
 /*
  * SOCKET.IO
