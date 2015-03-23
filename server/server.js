@@ -8,7 +8,7 @@ var express = require('express'),
     app = express(),
     Memcached = require('memcached'),
     memcached = new Memcached('127.0.0.1:11211', null),
-    bodyParser = require('body-parser'),
+//bodyParser = require('body-parser'),
     port = 5005,
     async = require('async'),
     router = express.Router(),
@@ -16,7 +16,6 @@ var express = require('express'),
     singleStorieUrl = 'https://hacker-news.firebaseio.com/v0/item/',
     top500Stories_Url = 'https://hacker-news.firebaseio.com/v0/topstories.json',
     socket = require('socket.io');
-
 
 
 
@@ -31,32 +30,39 @@ http(top500Stories_Url, function (err, res, body) {
 
     var storyIds = JSON.parse(body).slice(0, _limit);
 
-    async.map(storyIds, getEachStory, function (err, data) {
-    });
+    var max = (_limit > 100)? 8: 5;
+
+    var reqOptions = {pool: {maxSockets: 8}};/* try 10+ for 500 stories */
+
+
+
+
+    async.map(storyIds, getEachStory, function (err, data) {});
 
     function getEachStory(id, cb) {
 
         http(singleStorieUrl + id + '.json', function (err, res, body) {
-
             var _details = JSON.parse(body);
 
             _stories.push({
 
-                              url: (_details.url || 'no url'),
-                              title: (_details.title || 'no title'),
-                              score: (_details.score || 'no score')
+                url: (_details.url || 'no url'),
+                title: (_details.title || 'no title'),
+                score: (_details.score || 'no score')
 
-                          });
+            });
 
             cb(null, _stories);
         });
     }
 });
 
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
-app.use('/api', router);
+/* not needed, possibly vulnerable to xss */
+//app.use(bodyParser.urlencoded({extended: true}));
+//app.use(bodyParser.json());
 
+
+app.use('/api', router);
 
 
 
@@ -74,7 +80,6 @@ app.get('/top-stories', function (req, res) {
 
 /* sortOrder: asc | desc/:range 0-9 */
 app.get('/api/sorted-stories/:sortOrder/:range', function (req, res) {
-    console.log('get sorted stories');
 
     res.setHeader('Access-Control-Allow-Origin', '*');
 
@@ -114,7 +119,7 @@ app.get('/api/sorted-stories/:sortOrder/:range', function (req, res) {
         data: '',
         range: [start, end],
         links: {
-            fwd:  '//localhost:5005/api/sorted-stories/asc/' + fwdStart + '-' + fwdEnd,
+            fwd: '//localhost:5005/api/sorted-stories/asc/' + fwdStart + '-' + fwdEnd,
             back: '//localhost:5005/api/sorted-stories/asc/' + backStart + '-' + backEnd
         }
     };
@@ -132,7 +137,6 @@ console.log('\n', 'node server running on port 5005, socket.io on 5006, and memc
 
 
 
-
 /*
  * SOCKET.IO
  * */
@@ -142,7 +146,7 @@ socket = socket.listen(5006);
 socket.on('connect', function (conn) {
 
     async.whilst(
-        function haveAllStories() {
+        function allStoriesLoaded() {
 
             return _stories.length != _limit;
         },
@@ -150,8 +154,6 @@ socket.on('connect', function (conn) {
 
 
         function countStories(callback) {
-
-            console.log('count ', _stories.length);
 
             conn.emit('story-count', {count: _stories.length, total: _limit});
 
@@ -180,7 +182,7 @@ socket.on('connect', function (conn) {
 
                         console.log('sort cb ');
 
-                        memcached.set('stories', _stories, 1200, function (err, data) {
+                        memcached.set('stories', _stories, 30, function (err, data) {
                         });
                     }
                 ]);
@@ -192,12 +194,6 @@ socket.on('connect', function (conn) {
         socket.disconnect();
     });
 });
-
-
-
-
-
-
 
 
 
