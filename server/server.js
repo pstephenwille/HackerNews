@@ -24,6 +24,7 @@ var express = require('express'),
 var _stories = [], _limit = 500;
 
 http(top500Stories_Url, function (err, res, body) {
+    if(err) throw err;
 
     var storyIds = JSON.parse(body).slice(0, _limit);
 
@@ -34,7 +35,7 @@ http(top500Stories_Url, function (err, res, body) {
 
 
 
-    async.map(storyIds, getEachStory, function (err, data) {});
+    async.map(storyIds, getEachStory, function (err, data) { if(err) throw err; });
 
     function getEachStory(id, cb) {
 
