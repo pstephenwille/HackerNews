@@ -24,16 +24,15 @@ var express = require('express'),
  * */
 
 /* get top 500 stories */
-var _stories = [], _limit = 20;
+var _stories = [], _limit = 500;
 
 http(top500Stories_Url, function (err, res, body) {
 
     var storyIds = JSON.parse(body).slice(0, _limit);
 
-    var max = (_limit > 100)? 8: 5;
+    var max = (_limit > 200)? 8: 6;
 
-    var reqOptions = {pool: {maxSockets: 8}};/* try 10+ for 500 stories */
-
+    var reqOptions = {pool: {maxSockets: max}};/* try 10+ for 500 stories */
 
 
 
@@ -91,6 +90,8 @@ app.get('/api/sorted-stories/:sortOrder/:range', function (req, res) {
         fwdStart = (start + step),
         backStart = (start - step),
         backEnd = (backStart + step);
+
+
 
     /* check bounds: fwd */
     fwdEnd = (fwdEnd > _limit) ? _limit : fwdEnd;
@@ -163,7 +164,6 @@ socket.on('connect', function (conn) {
 
 
         function finalData(err) {
-            console.log('done');
             /* sort _stories */
             async.series(
                 [
@@ -179,8 +179,6 @@ socket.on('connect', function (conn) {
                     },
 
                     function () {
-
-                        console.log('sort cb ');
 
                         memcached.set('stories', _stories, 30, function (err, data) {
                         });
