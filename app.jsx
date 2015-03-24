@@ -94,7 +94,7 @@ APP = React.createClass(
                     <div>
                         {this.state.stories.map(function (story, index) {
                             return (
-                                <ul key={'story_'+ index}>
+                                <ul key={'story_' + index}>
                                     <li>
 
                                         <span className="title">Tite: </span> {story.title}</li>

@@ -1,9 +1,3 @@
-/*
- 500 https://hacker-news.firebaseio.com/v0/topstories.json - 50.23.219.162
- 1 https://hacker-news.firebaseio.com/v0/item/9139817.json
-
- * */
-
 var express = require('express'),
     app = express(),
     port = 5005,
@@ -24,22 +18,20 @@ var express = require('express'),
 var _stories = [], _limit = 500;
 
 http(top500Stories_Url, function (err, res, body) {
-    if(err) throw err;
+    if (err) throw err;
 
-    var storyIds = JSON.parse(body).slice(0, _limit);
+    var storyIds = JSON.parse(body).slice(0, _limit),
 
-    var max = (_limit > 200) ? 8 : 6;
+        max = (_limit > 200) ? 12 : 6,
 
-    var reqOptions = {pool: {maxSockets: max}};
-    /* try 10+ for 500 stories */
-
+        reqOptions = {pool: {maxSockets: max}};
 
 
-    async.map(storyIds, getEachStory, function (err, data) { if(err) throw err; });
+    async.map(storyIds, getEachStory, function (err, data) { if (err) throw err; });
 
     function getEachStory(id, cb) {
 
-        http(singleStorieUrl + id + '.json', function (err, res, body) {
+        http(singleStorieUrl + id + '.json', reqOptions, function (err, res, body) {
             var _details = JSON.parse(body);
 
             _stories.push({
@@ -136,7 +128,9 @@ console.log('\n', 'node server running on port 5005, socket.io on 5006, and memc
  * */
 socket = socket.listen(5006);
 
-/*  wait till we have all stories, send story count, then sort them */
+/*  send story count,
+ *  till we have all stories,
+ *  then sort all stories. */
 socket.on('connect', function (conn) {
 
     async.whilst(
@@ -172,13 +166,13 @@ socket.on('connect', function (conn) {
                     },
 
                     function () {
+                        console.log('sort complete');
                         conn.emit('story-count', {count: _stories.length, total: _limit});
 
                     }
                 ]);
-
-            //conn.emit('story-count', {count: _stories.length, total: _limit});
-        });
+        }
+    );
 
     conn.on('disconnect', function (conn) {
         socket.disconnect();
