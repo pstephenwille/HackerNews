@@ -54,10 +54,6 @@ http(top500Stories_Url, function (err, res, body) {
     }
 });
 
-/* not needed, possibly vulnerable to xss */
-//app.use(bodyParser.urlencoded({extended: true}));
-//app.use(bodyParser.json());
-
 
 app.use('/api', router);
 
