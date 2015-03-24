@@ -20,4 +20,4 @@ Story counter is updated via websockets.
 
 When all stories are received, the first 10 are displayed.
 
-Back/Fwd nav buttons allow you to cycle though all stories, endlessley.
+Back/Fwd nav buttons allow you to endlessly cycle though all stories.
