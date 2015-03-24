@@ -6,9 +6,6 @@
 
 var express = require('express'),
     app = express(),
-    Memcached = require('memcached'),
-    memcached = new Memcached('127.0.0.1:11211', null),
-//bodyParser = require('body-parser'),
     port = 5005,
     async = require('async'),
     router = express.Router(),
@@ -24,15 +21,16 @@ var express = require('express'),
  * */
 
 /* get top 500 stories */
-var _stories = [], _limit = 500;
+var _stories = [], _limit = 20;
 
 http(top500Stories_Url, function (err, res, body) {
 
     var storyIds = JSON.parse(body).slice(0, _limit);
 
-    var max = (_limit > 200)? 8: 6;
+    var max = (_limit > 200) ? 8 : 6;
 
-    var reqOptions = {pool: {maxSockets: max}};/* try 10+ for 500 stories */
+    var reqOptions = {pool: {maxSockets: max}};
+    /* try 10+ for 500 stories */
 
 
 
@@ -125,12 +123,10 @@ app.get('/api/sorted-stories/:sortOrder/:range', function (req, res) {
         }
     };
 
-    memcached.get('stories', function (err, data) {
 
-        resource.data = data.slice(start, end);
+    resource.data = _stories.slice(start, end);
 
-        res.json(resource);
-    });
+    res.json(resource);
 });
 
 app.listen(port);
@@ -179,13 +175,12 @@ socket.on('connect', function (conn) {
                     },
 
                     function () {
+                        conn.emit('story-count', {count: _stories.length, total: _limit});
 
-                        memcached.set('stories', _stories, 30, function (err, data) {
-                        });
                     }
                 ]);
 
-            conn.emit('story-count', {count: _stories.length, total: _limit});
+            //conn.emit('story-count', {count: _stories.length, total: _limit});
         });
 
     conn.on('disconnect', function (conn) {
