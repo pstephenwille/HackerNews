@@ -14,7 +14,7 @@
 
 
 
-##### Displays 500 top Hackernews stories; stories are sorted with back/fwd buttons.
+##### Displays 500 top Hackernews stories, sorted with back/fwd buttons.
 
 Story counter is updated via websockets.
 
