@@ -25,10 +25,8 @@ APP = React.createClass(
                 if (self.isMounted()) {
 
                     self.setState({
-
                         numStories: data.count,
                         total: data.total
-
                     });
 
                     if (data.count == data.total) {
@@ -61,7 +59,6 @@ APP = React.createClass(
 
         getMoreStories: function (url) {
             var self = this;
-
             $.get(url, function (data) {
 
                 self.setState({

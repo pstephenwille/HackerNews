@@ -14,24 +14,18 @@ var express = require('express'),
  * SETUP
  * */
 
-/* get top 500 stories */
-var _stories = [], _limit = 500;
+/* get top 400 stories */
+var _stories = [], _limit = 400;
 
 http(top500Stories_Url, function (err, res, body) {
     if (err) throw err;
 
-    var storyIds = JSON.parse(body).slice(0, _limit),
-
-        max = (_limit > 200) ? 12 : 6,
-
-        reqOptions = {pool: {maxSockets: max}};
-
+    var storyIds = JSON.parse(body).slice(0, _limit);
 
     async.map(storyIds, getEachStory, function (err, data) { if (err) throw err; });
 
     function getEachStory(id, cb) {
-
-        http(singleStorieUrl + id + '.json', reqOptions, function (err, res, body) {
+        http(singleStorieUrl + id + '.json', function (err, res, body) {
             var _details = JSON.parse(body);
 
             _stories.push({
@@ -76,7 +70,8 @@ app.get('/api/sorted-stories/:sortOrder/:range', function (req, res) {
         fwdEnd = (end + step),
         fwdStart = (start + step),
         backStart = (start - step),
-        backEnd = (backStart + step);
+        backEnd = (backStart + step),
+        resource = {};
 
 
 
@@ -119,7 +114,10 @@ app.get('/api/sorted-stories/:sortOrder/:range', function (req, res) {
 });
 
 app.listen(port);
-console.log('\n', 'node server running on port 5005, socket.io on 5006, and memcache on port 11211', '\n\n\n');
+console.log('\n\n\n',
+    'node server running on port 5005, socket.io on 5006\n',
+    'http://localhost:5005/top-stories',
+    '\n\n\n');
 
 
 

@@ -51,7 +51,7 @@ gulp.task('build', function () {
 
         .pipe(concat(path.MINIFIED_OUT))
 
-        .pipe(uglify(path.MINIFIED_OUT))
+        .pipe(uglify())
 
         .pipe(gulp.dest(path.DEST_BUILD));
 });
