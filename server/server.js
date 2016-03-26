@@ -14,8 +14,8 @@ var express = require('express'),
  * SETUP
  * */
 
-/* get top 500 stories */
-var _stories = [], _limit = 500;
+/* get top 400 stories */
+var _stories = [], _limit = 400;
 
 http(top500Stories_Url, function (err, res, body) {
     if (err) throw err;
