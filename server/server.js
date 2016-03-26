@@ -114,10 +114,10 @@ app.get('/api/sorted-stories/:sortOrder/:range', function (req, res) {
 });
 
 app.listen(port);
-console.log('\n\n\n',
-    'node server running on port 5005, socket.io on 5006\n',
+console.log('\n\r\n\r',
+    'node server running on port 5005, socket.io on 5006\n\r\n\r',
     'http://localhost:5005/top-stories',
-    '\n\n\n');
+    '\n\r\n\r');
 
 
 
