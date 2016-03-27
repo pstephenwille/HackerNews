@@ -46,13 +46,9 @@ gulp.task('watch', function () {
 
 gulp.task('build', function () {
     gulp.src(path.JS)
-
         .pipe(react())
-
         .pipe(concat(path.MINIFIED_OUT))
-
         .pipe(uglify())
-
         .pipe(gulp.dest(path.DEST_BUILD));
 });
 

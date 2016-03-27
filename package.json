@@ -4,10 +4,9 @@
   "description": "test app for Ratio",
   "main": "/server/server.js",
   "scripts": {
-    "test": "gulp dev & node server/server.js",
-    "start": "gulp prod & node server/server.js",
+    "start": "node server/server.js",
     "jsx": "babel app.jsx --out-file server/public/dist/build/build.npm.js",
-    "bundle": "globify server/public/dist/build/build.npm.js --outfile=server/public/dist/build/bundle.npm.js",
+    "bundle": "globify -g uglifyify server/public/dist/build/build.npm.js -o server/public/dist/build/bundle.npm.js",
     "build": "npm run jsx && npm run bundle && npm start"
   },
   "repository": {
@@ -29,6 +28,6 @@
   "devDependencies": {
     "babel": "^5.6.10",
     "globify": "^1.2.1",
-    "uglifyjs": "^2.4.10"
+    "uglifyify": "^3.0.1"
   }
 }
